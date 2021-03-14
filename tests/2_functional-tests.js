@@ -5,12 +5,22 @@ const server = require("../server.js");
 
 chai.use(chaiHttp);
 
-let Translator = require("../components/translator.js");
+const Translator = require("../components/translator.js");
+let translator;
 
 suite("Functional Tests", () => {
+  suiteSetup((done) => {
+    translator = new Translator();
+    done();
+  });
+
   suite("POST /api/translate", () => {
     test("Translation with text and locale fields", (done) => {
-      const reqBody = {};
+      const reqBody = {
+        text: "hi color",
+        locale: "american-to-british",
+      };
+      const translation = translator.translate(reqBody.text, reqBody.locale);
 
       chai
         .request(server)
@@ -19,17 +29,20 @@ suite("Functional Tests", () => {
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isObject(res.body, "response should be an object");
-          assert.property(
+          assert.deepEqual(
             res.body,
-            "solution",
-            "response should have solution"
+            { text: reqBody.text, translation },
+            "response should have text and translation"
           );
           done();
         });
     });
 
     test("Translation with text and invalid locale field", (done) => {
-      const reqBody = {};
+      const reqBody = {
+        text: "hi",
+        locale: "british",
+      };
 
       chai
         .request(server)
@@ -38,17 +51,21 @@ suite("Functional Tests", () => {
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isObject(res.body, "response should be an object");
-          assert.property(
+          assert.deepEqual(
             res.body,
-            "solution",
-            "response should have solution"
+            {
+              error: "Invalid value for locale field",
+            },
+            "response should return correct error message"
           );
           done();
         });
     });
 
     test("Translation with missing text field", (done) => {
-      const reqBody = {};
+      const reqBody = {
+        locale: "american-to-british",
+      };
 
       chai
         .request(server)
@@ -57,17 +74,19 @@ suite("Functional Tests", () => {
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isObject(res.body, "response should be an object");
-          assert.property(
+          assert.deepEqual(
             res.body,
-            "solution",
-            "response should have solution"
+            { error: "Required field(s) missing" },
+            "response should return correct error message"
           );
           done();
         });
     });
 
     test("Translation with missing locale field", (done) => {
-      const reqBody = {};
+      const reqBody = {
+        text: "hi",
+      };
 
       chai
         .request(server)
@@ -76,17 +95,22 @@ suite("Functional Tests", () => {
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isObject(res.body, "response should be an object");
-          assert.property(
+          assert.deepEqual(
             res.body,
-            "solution",
-            "response should have solution"
+            {
+              error: "Required field(s) missing",
+            },
+            "response should return correct error message"
           );
           done();
         });
     });
 
     test("Translation with empty text", (done) => {
-      const reqBody = {};
+      const reqBody = {
+        text: "",
+        locale: "american-to-british",
+      };
 
       chai
         .request(server)
@@ -95,17 +119,20 @@ suite("Functional Tests", () => {
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isObject(res.body, "response should be an object");
-          assert.property(
+          assert.deepEqual(
             res.body,
-            "solution",
-            "response should have solution"
+            { error: "No text to translate" },
+            "response should return correct error message"
           );
           done();
         });
     });
 
     test("Translation with text that needs no translation", (done) => {
-      const reqBody = {};
+      const reqBody = {
+        text: "Hi",
+        locale: "american-to-british",
+      };
 
       chai
         .request(server)
@@ -114,10 +141,10 @@ suite("Functional Tests", () => {
         .end((_err, res) => {
           assert.equal(res.status, 200);
           assert.isObject(res.body, "response should be an object");
-          assert.property(
+          assert.deepEqual(
             res.body,
-            "solution",
-            "response should have solution"
+            { text: reqBody.text, translation: "Everything looks good to me!" },
+            "response should have text and translation"
           );
           done();
         });
