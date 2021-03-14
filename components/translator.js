@@ -33,7 +33,7 @@ class Translator {
         const regex = new RegExp(`\\b${key}\\b`, "gi");
         newString = newString.replace(
           regex,
-          `<span class='highlight'>${americanToBritishSpelling[key]}</span>`
+          `<span class="highlight">${americanToBritishSpelling[key]}</span>`
         );
       });
 
@@ -41,7 +41,7 @@ class Translator {
         const regex = new RegExp(`\\b${key}\\b`, "gi");
         newString = newString.replace(
           regex,
-          `<span class='highlight'>${americanOnly[key]}</span>`
+          `<span class="highlight">${americanOnly[key]}</span>`
         );
       });
     } else if (locale === this.locales[1]) {
@@ -52,7 +52,7 @@ class Translator {
         );
         newString = newString.replace(
           regex,
-          `<span class='highlight'>${key}</span>`
+          `<span class="highlight">${key}</span>`
         );
       });
 
@@ -60,7 +60,7 @@ class Translator {
         const regex = new RegExp(`(^${key}\\b|(?<=\\s)${key}\\b)`, "gi");
         newString = newString.replace(
           regex,
-          `<span class='highlight'>${britishOnly[key]}</span>`
+          `<span class="highlight">${britishOnly[key]}</span>`
         );
       });
     }
@@ -76,7 +76,7 @@ class Translator {
         const regex = new RegExp(`\\b${key.replace(".", "\\b\\.")}`, "gi");
         newString = newString.replace(
           regex,
-          `<span class='highlight'>${this.capitalize(
+          `<span class="highlight">${this.capitalize(
             americanToBritishTitles[key]
           )}</span>`
         );
@@ -89,7 +89,7 @@ class Translator {
         );
         newString = newString.replace(
           regex,
-          `<span class='highlight'>${this.capitalize(key)}</span>`
+          `<span class="highlight">${this.capitalize(key)}</span>`
         );
       });
     }
@@ -107,7 +107,7 @@ class Translator {
         const newTimeString = matched.replace(":", ".");
         newString = newString.replace(
           matched,
-          `<span class='highlight'>${newTimeString}</span>`
+          `<span class="highlight">${newTimeString}</span>`
         );
       });
     } else if (locale === this.locales[1]) {
@@ -117,7 +117,7 @@ class Translator {
         const newTimeString = matched.replace(".", ":");
         newString = newString.replace(
           matched,
-          `<span class='highlight'>${newTimeString}</span>`
+          `<span class="highlight">${newTimeString}</span>`
         );
       });
     }
